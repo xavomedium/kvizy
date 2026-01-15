@@ -5,46 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historický kvíz</title>
     <style>
-        /* Základní nastavení a reset */
+        /* Základní nastavení */
         body {
             font-family: 'Seznam Sans', Arial, sans-serif;
-            background-color: #ffffff; /* Změna na bílou, aby to lépe splynulo v iframu */
+            background-color: #ffffff;
             color: #111;
             margin: 0;
             padding: 0;
             line-height: 1.6;
-            overflow: hidden; /* Skryje posuvníky, pokud to iframe dovolí */
+            overflow-x: hidden; /* Zabrání vodorovnému posuvníku */
         }
 
-        /* Kontejner */
+        /* Hlavní kontejner */
         .medium-container {
             max-width: 100%;
             background: #ffffff;
             margin: 0 auto;
-            padding: 20px; /* Menší padding, když tam není nadpis */
+            padding: 20px;
+            box-sizing: border-box;
         }
 
-        /* Styly pro kvíz */
-        .quiz-question {
-            margin-bottom: 20px;
-            border-bottom: none; /* Odstraněna čára, u jedné otázky není třeba */
-            padding-bottom: 0;
-        }
-
+        /* Styl otázky */
         .question-title {
-            font-size: 22px; /* Trochu větší písmo pro tu jednu otázku */
-            font-weight: 700;
-            margin-bottom: 20px;
-            display: block;
             font-family: Georgia, 'Times New Roman', serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            display: block;
+            color: #000;
+            line-height: 1.3;
         }
 
+        /* Mřížka pro odpovědi */
         .options-grid {
             display: grid;
-            grid-template-columns: 1fr; /* Pod sebe */
-            gap: 10px;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
+        /* Tlačítka odpovědí */
         .option-btn {
             background-color: #f9f9f9;
             border: 1px solid #ddd;
@@ -55,64 +55,88 @@
             border-radius: 4px;
             transition: all 0.2s ease;
             position: relative;
+            color: #333;
+            font-family: 'Seznam Sans', Arial, sans-serif;
         }
 
         .option-btn:hover {
             background-color: #eee;
-            border-color: #ccc;
+            border-color: #bbb;
         }
 
-        /* Stavy odpovědí */
+        /* Barvy po vyhodnocení */
         .option-btn.correct {
             background-color: #e6f4ea;
             border-color: #1e8e3e;
             color: #1e8e3e;
-            font-weight: bold;
+            font-weight: 700;
         }
 
         .option-btn.wrong {
             background-color: #fce8e6;
             border-color: #d93025;
             color: #d93025;
+            opacity: 0.8;
         }
 
         .option-btn:disabled {
             cursor: default;
-            opacity: 1; /* Aby barvy zůstaly výrazné */
         }
 
-        /* Výsledková část - zjednodušená */
-        #result-box {
-            display: none;
-            margin-top: 20px;
-            padding: 15px;
-            background: #fcfcfc;
-            border-top: 2px solid #eee;
-            text-align: center;
+        /* Box pro zajímavost (Věděli jste, že...) */
+        #fact-box {
+            display: none; /* Skryto na začátku */
+            background-color: #f8f8f8;
+            border-left: 4px solid #cc0000; /* Červený pruh vlevo */
+            padding: 20px;
+            margin-top: 25px;
+            border-radius: 0 4px 4px 0;
+            animation: fadeIn 0.5s ease;
         }
 
-        .score-display {
-            font-size: 18px;
-            font-weight: bold;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #fact-box h3 {
+            font-family: Georgia, serif;
+            margin: 0 0 10px 0;
             color: #cc0000;
+            font-size: 18px;
         }
 
+        #fact-box p {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        /* Stavový text (Správně/Špatně) */
+        .status-text {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        /* Tlačítko Zkusit znovu */
         .cta-button {
             display: inline-block;
-            background-color: #cc0000;
+            background-color: #333;
             color: white;
             padding: 10px 20px;
             text-decoration: none;
             font-weight: bold;
             border-radius: 4px;
-            margin-top: 10px;
+            margin-top: 15px;
             border: none;
             cursor: pointer;
             font-size: 14px;
+            transition: background 0.2s;
         }
-        
+
         .cta-button:hover {
-            background-color: #a30000;
+            background-color: #000;
         }
 
     </style>
@@ -120,76 +144,86 @@
 <body>
 
     <div class="medium-container">
-        <div id="quiz-container"></div>
+        <span class="question-title" id="question-text"></span>
 
-        <div id="result-box">
-            <div class="score-display" id="feedback-text"></div>
+        <div class="options-grid" id="options-container">
+            </div>
+
+        <div id="fact-box">
+            <span id="status-message" class="status-text"></span>
+            <h3>Věděli jste, že...</h3>
+            <p id="fact-text"></p>
             <button class="cta-button" onclick="location.reload()">Zkusit znovu</button>
         </div>
     </div>
 
     <script>
-        // Data kvízu - JEN JEDNA OTÁZKA
-        const questions = [
-            {
-                question: "Který rok je spojován se založením Univerzity Karlovy?",
-                options: ["1348", "1212", "1415", "1620"],
-                correct: 0 // Index správné odpovědi (0 = A)
-            }
-        ];
+        // ==========================================
+        // ZDE UPRAVUJTE TEXTY KVÍZU
+        // ==========================================
+        const quizData = {
+            question: "Který rok je spojován se založením Univerzity Karlovy?",
+            options: ["1348", "1212", "1415", "1620"],
+            correctIndex: 0, // 0 = A, 1 = B, 2 = C, 3 = D
+            
+            // Text zajímavosti, který se ukáže po odpovědi:
+            fact: "Univerzita Karlova byla založena zakládací listinou ze 7. dubna 1348. Vzorem pro její uspořádání byly univerzity v Bologni a v Paříži. Původně měla čtyři fakulty: svobodných umění, lékařskou, právnickou a teologickou."
+        };
+        // ==========================================
 
-        let score = 0;
-        const quizContainer = document.getElementById('quiz-container');
-        const resultBox = document.getElementById('result-box');
-        const feedbackText = document.getElementById('feedback-text');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const factBox = document.getElementById('fact-box');
+        const factText = document.getElementById('fact-text');
+        const statusMessage = document.getElementById('status-message');
 
         function renderQuiz() {
-            questions.forEach((q, index) => {
-                const questionDiv = document.createElement('div');
-                questionDiv.className = 'quiz-question';
+            // Vypíše otázku
+            questionText.innerText = quizData.question;
+
+            // Vygeneruje tlačítka
+            quizData.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
                 
-                const title = document.createElement('span');
-                title.className = 'question-title';
-                title.innerText = q.question;
-                questionDiv.appendChild(title);
-
-                const optionsDiv = document.createElement('div');
-                optionsDiv.className = 'options-grid';
-
-                q.options.forEach((opt, optIndex) => {
-                    const btn = document.createElement('button');
-                    btn.className = 'option-btn';
-                    // Odstranil jsem "a) b) c)", nechal jsem jen text odpovědi pro čistší vzhled
-                    btn.innerText = opt; 
-                    
-                    btn.onclick = () => checkAnswer(btn, optIndex, q.correct, optionsDiv);
-                    
-                    optionsDiv.appendChild(btn);
-                });
-
-                questionDiv.appendChild(optionsDiv);
-                quizContainer.appendChild(questionDiv);
+                // Přidá a), b), c), d) před text
+                const letter = String.fromCharCode(97 + index); // 97 je kód pro 'a'
+                btn.innerText = `${letter}) ${opt}`;
+                
+                // Kliknutí
+                btn.onclick = () => evaluateAnswer(btn, index);
+                
+                optionsContainer.appendChild(btn);
             });
         }
 
-        function checkAnswer(selectedBtn, selectedIndex, correctIndex, parentDiv) {
-            const buttons = parentDiv.querySelectorAll('.option-btn');
-            buttons.forEach(b => b.disabled = true);
+        function evaluateAnswer(selectedBtn, selectedIndex) {
+            // Zablokuje všechna tlačítka
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
 
-            if (selectedIndex === correctIndex) {
+            // Zkontroluje správnost
+            if (selectedIndex === quizData.correctIndex) {
                 selectedBtn.classList.add('correct');
-                feedbackText.innerText = "Správně! Univerzita byla založena roku 1348.";
-                score++;
+                statusMessage.style.color = "#1e8e3e";
+                statusMessage.innerText = "Správná odpověď!";
             } else {
                 selectedBtn.classList.add('wrong');
-                buttons[correctIndex].classList.add('correct');
-                feedbackText.innerText = "Chyba. Správná odpověď je 1348.";
+                // Zvýrazní správnou odpověď
+                allBtns[quizData.correctIndex].classList.add('correct');
+                statusMessage.style.color = "#d93025";
+                statusMessage.innerText = "To není správně.";
             }
 
-            // Okamžité zobrazení výsledku
-            resultBox.style.display = 'block';
+            // Naplní a zobrazí zajímavost
+            factText.innerHTML = quizData.fact;
+            factBox.style.display = 'block';
+            
+            // Posune stránku dolů, aby byla vidět zajímavost (pro mobily)
+            // factBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
+        // Spustit
         renderQuiz();
     </script>
 </body>
