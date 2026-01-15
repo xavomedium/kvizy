@@ -3,73 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historický kvíz: Znáte dějiny 20. století?</title>
+    <title>Historický kvíz</title>
     <style>
         /* Základní nastavení a reset */
         body {
             font-family: 'Seznam Sans', Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #ffffff; /* Změna na bílou, aby to lépe splynulo v iframu */
             color: #111;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             line-height: 1.6;
+            overflow: hidden; /* Skryje posuvníky, pokud to iframe dovolí */
         }
 
-        /* Kontejner článku ve stylu Seznam Médium */
+        /* Kontejner */
         .medium-container {
-            max-width: 680px;
+            max-width: 100%;
             background: #ffffff;
             margin: 0 auto;
-            padding: 40px;
-            border-radius: 4px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        /* Hlavička článku */
-        h1 {
-            font-family: Georgia, 'Times New Roman', serif;
-            font-size: 36px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            line-height: 1.2;
-        }
-
-        .meta-info {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 20px;
-        }
-
-        .meta-info span {
-            margin-right: 15px;
-        }
-
-        .perex {
-            font-size: 18px;
-            font-weight: 400;
-            margin-bottom: 40px;
-            color: #333;
+            padding: 20px; /* Menší padding, když tam není nadpis */
         }
 
         /* Styly pro kvíz */
         .quiz-question {
-            margin-bottom: 40px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 30px;
+            margin-bottom: 20px;
+            border-bottom: none; /* Odstraněna čára, u jedné otázky není třeba */
+            padding-bottom: 0;
         }
 
         .question-title {
-            font-size: 20px;
+            font-size: 22px; /* Trochu větší písmo pro tu jednu otázku */
             font-weight: 700;
             margin-bottom: 20px;
             display: block;
+            font-family: Georgia, 'Times New Roman', serif;
         }
 
         .options-grid {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr; /* Pod sebe */
             gap: 10px;
         }
 
@@ -106,44 +78,39 @@
 
         .option-btn:disabled {
             cursor: default;
-            opacity: 0.7;
+            opacity: 1; /* Aby barvy zůstaly výrazné */
         }
 
-        /* Výsledková část */
+        /* Výsledková část - zjednodušená */
         #result-box {
             display: none;
-            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
             background: #fcfcfc;
-            padding: 30px;
-            border: 2px solid #cc0000;
-            border-radius: 8px;
-            margin-top: 30px;
-        }
-
-        #result-box h2 {
-            font-family: Georgia, serif;
-            color: #cc0000;
+            border-top: 2px solid #eee;
+            text-align: center;
         }
 
         .score-display {
-            font-size: 24px;
+            font-size: 18px;
             font-weight: bold;
-            margin: 15px 0;
+            color: #cc0000;
         }
 
         .cta-button {
             display: inline-block;
             background-color: #cc0000;
             color: white;
-            padding: 12px 24px;
+            padding: 10px 20px;
             text-decoration: none;
             font-weight: bold;
             border-radius: 4px;
-            margin-top: 15px;
+            margin-top: 10px;
             border: none;
             cursor: pointer;
+            font-size: 14px;
         }
-
+        
         .cta-button:hover {
             background-color: #a30000;
         }
@@ -153,87 +120,49 @@
 <body>
 
     <div class="medium-container">
-        <h1>Velký historický kvíz: Jak dobře znáte klíčové události našich dějin?</h1>
-        
-        <div class="meta-info">
-            <span>Autor: <strong>Historie Hrou</strong></span>
-            <span>15. 1. 2026</span>
-        </div>
-
-        <p class="perex">
-            Myslíte si, že dáváte pozor v hodinách dějepisu nebo sledujete dokumenty s nadšením? Otestujte své znalosti v našem kvízu zaměřeném na významné milníky české i světové historie.
-        </p>
-
-        <div id="quiz-container">
-            </div>
+        <div id="quiz-container"></div>
 
         <div id="result-box">
-            <h2>Váš výsledek</h2>
-            <div class="score-display" id="score-text">0/5</div>
-            <p id="feedback-text">Text hodnocení...</p>
+            <div class="score-display" id="feedback-text"></div>
             <button class="cta-button" onclick="location.reload()">Zkusit znovu</button>
         </div>
     </div>
 
     <script>
-        // Data kvízu
+        // Data kvízu - JEN JEDNA OTÁZKA
         const questions = [
             {
-                question: "1. Který rok je spojován se založením Univerzity Karlovy?",
+                question: "Který rok je spojován se založením Univerzity Karlovy?",
                 options: ["1348", "1212", "1415", "1620"],
                 correct: 0 // Index správné odpovědi (0 = A)
-            },
-            {
-                question: "2. Jak se jmenoval atentátník, který v Sarajevu zastřelil Františka Ferdinanda d'Este?",
-                options: ["Gavrilo Princip", "Lee Harvey Oswald", "Fanny Kaplanová", "John Wilkes Booth"],
-                correct: 0
-            },
-            {
-                question: "3. Kdo byl prvním československým prezidentem?",
-                options: ["Edvard Beneš", "Klement Gottwald", "Tomáš Garrigue Masaryk", "Václav Havel"],
-                correct: 2
-            },
-            {
-                question: "4. Ve kterém roce přistál člověk poprvé na Měsíci?",
-                options: ["1959", "1961", "1969", "1975"],
-                correct: 2
-            },
-            {
-                question: "5. Jak se nazývala listina, která zaručovala náboženskou svobodu v českých zemích (vydal ji Rudolf II.)?",
-                options: ["Zlatá bula sicilská", "Rudolfův majestát", "Obnovené zřízení zemské", "Toleranční patent"],
-                correct: 1
             }
         ];
 
         let score = 0;
         const quizContainer = document.getElementById('quiz-container');
         const resultBox = document.getElementById('result-box');
-        const scoreText = document.getElementById('score-text');
         const feedbackText = document.getElementById('feedback-text');
 
-        // Funkce pro vykreslení kvízu
         function renderQuiz() {
             questions.forEach((q, index) => {
                 const questionDiv = document.createElement('div');
                 questionDiv.className = 'quiz-question';
                 
-                // Nadpis otázky
                 const title = document.createElement('span');
                 title.className = 'question-title';
                 title.innerText = q.question;
                 questionDiv.appendChild(title);
 
-                // Grid pro možnosti
                 const optionsDiv = document.createElement('div');
                 optionsDiv.className = 'options-grid';
 
                 q.options.forEach((opt, optIndex) => {
                     const btn = document.createElement('button');
                     btn.className = 'option-btn';
-                    btn.innerText = String.fromCharCode(97 + optIndex) + ") " + opt; // a) b) c) d)
+                    // Odstranil jsem "a) b) c)", nechal jsem jen text odpovědi pro čistší vzhled
+                    btn.innerText = opt; 
                     
-                    // Logika kliknutí
-                    btn.onclick = () => checkAnswer(btn, optIndex, q.correct, optionsDiv, index);
+                    btn.onclick = () => checkAnswer(btn, optIndex, q.correct, optionsDiv);
                     
                     optionsDiv.appendChild(btn);
                 });
@@ -241,63 +170,26 @@
                 questionDiv.appendChild(optionsDiv);
                 quizContainer.appendChild(questionDiv);
             });
-
-            // Tlačítko vyhodnotit
-            const submitBtn = document.createElement('button');
-            submitBtn.className = 'cta-button';
-            submitBtn.innerText = 'Vyhodnotit kvíz';
-            submitBtn.style.marginTop = '20px';
-            submitBtn.style.display = 'none'; // Zobrazíme až po zodpovězení všeho, nebo rovnou
-            submitBtn.id = 'submit-all';
-            submitBtn.onclick = showResults;
-            
-            // Pro tento styl "Medium" budeme vyhodnocovat okamžitě po kliknutí, 
-            // ale celkové skóre ukážeme až na konci.
         }
 
-        let answeredCount = 0;
-
-        function checkAnswer(selectedBtn, selectedIndex, correctIndex, parentDiv, questionIndex) {
-            // Zabráníme vícenásobnému klikání v jedné otázce
+        function checkAnswer(selectedBtn, selectedIndex, correctIndex, parentDiv) {
             const buttons = parentDiv.querySelectorAll('.option-btn');
             buttons.forEach(b => b.disabled = true);
 
-            // Obarvení tlačítek
             if (selectedIndex === correctIndex) {
                 selectedBtn.classList.add('correct');
+                feedbackText.innerText = "Správně! Univerzita byla založena roku 1348.";
                 score++;
             } else {
                 selectedBtn.classList.add('wrong');
-                // Ukážeme správnou odpověď
                 buttons[correctIndex].classList.add('correct');
+                feedbackText.innerText = "Chyba. Správná odpověď je 1348.";
             }
 
-            answeredCount++;
-            
-            // Pokud jsou zodpovězeny všechny otázky, zobrazíme výsledek
-            if (answeredCount === questions.length) {
-                setTimeout(showResults, 1000);
-            }
-        }
-
-        function showResults() {
+            // Okamžité zobrazení výsledku
             resultBox.style.display = 'block';
-            scoreText.innerText = `${score} z ${questions.length} bodů`;
-            
-            // Hodnocení podle bodů
-            if (score === questions.length) {
-                feedbackText.innerText = "Excelentní! Jste skutečný znalec historie.";
-            } else if (score >= questions.length / 2) {
-                feedbackText.innerText = "Dobrá práce. Máte solidní přehled, ale pár detailů uniklo.";
-            } else {
-                feedbackText.innerText = "Nevadí, historie se dá vždycky doučit. Zkuste to znovu!";
-            }
-            
-            // Scroll na výsledek
-            resultBox.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Spuštění
         renderQuiz();
     </script>
 </body>
