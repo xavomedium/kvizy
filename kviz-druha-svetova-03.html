@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historický kvíz</title>
+    <style>
+        body {
+            font-family: 'Seznam Sans', Arial, sans-serif;
+            background-color: #ffffff;
+            color: #111;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .medium-container {
+            max-width: 100%;
+            background: #ffffff;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .question-title {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            display: block;
+            color: #000;
+            line-height: 1.3;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px 20px;
+            text-align: left;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            position: relative;
+            color: #333;
+            font-family: 'Seznam Sans', Arial, sans-serif;
+        }
+
+        .option-btn:hover {
+            background-color: #eee;
+            border-color: #bbb;
+        }
+
+        .option-btn.correct {
+            background-color: #e6f4ea;
+            border-color: #1e8e3e;
+            color: #1e8e3e;
+            font-weight: 700;
+        }
+
+        .option-btn.wrong {
+            background-color: #fce8e6;
+            border-color: #d93025;
+            color: #d93025;
+            opacity: 0.8;
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+        }
+
+        #fact-box {
+            display: none;
+            background-color: #f8f8f8;
+            border-left: 4px solid #cc0000;
+            padding: 20px;
+            margin-top: 25px;
+            border-radius: 0 4px 4px 0;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #fact-box h3 {
+            font-family: Georgia, serif;
+            margin: 0 0 10px 0;
+            color: #cc0000;
+            font-size: 18px;
+        }
+
+        #fact-box p {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .status-text {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+            font-size: 17px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="medium-container">
+        <span class="question-title" id="question-text"></span>
+
+        <div class="options-grid" id="options-container">
+        </div>
+
+        <div id="fact-box">
+            <span id="status-message" class="status-text"></span>
+            <h3>Věděli jste, že...</h3>
+            <p id="fact-text"></p>
+        </div>
+    </div>
+
+    <script>
+const quizData = {
+    question: "Která bitva je považována za zásadní obrat ve válce na východní frontě?",
+    options: ["Bitva o Moskvu", "Bitva u Kurska", "Bitva u Stalingradu", "Obléhání Leningradu"],
+    correctIndex: 2,
+    fact: "Bitva u Stalingradu (1942–1943) skončila drtivou porážkou německých vojsk a kapitulací polního maršála Friedricha Pauluse. Do zajetí padlo přes 90 000 německých vojáků, z nichž se po válce vrátilo domů jen asi 6 000. Toto vítězství Rudé armády znamenalo psychologický zlom a začátek ústupu Wehrmachtu."
+};
+
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const factBox = document.getElementById('fact-box');
+        const factText = document.getElementById('fact-text');
+        const statusMessage = document.getElementById('status-message');
+
+        function renderQuiz() {
+            questionText.innerText = quizData.question;
+
+            quizData.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                
+                const letter = String.fromCharCode(97 + index);
+                btn.innerText = `${letter}) ${opt}`;
+                
+                btn.onclick = () => evaluateAnswer(btn, index);
+                
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function evaluateAnswer(selectedBtn, selectedIndex) {
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const correctOptionText = quizData.options[quizData.correctIndex];
+
+            if (selectedIndex === quizData.correctIndex) {
+                selectedBtn.classList.add('correct');
+                statusMessage.style.color = "#1e8e3e";
+                statusMessage.innerText = "Správná odpověď!";
+            } else {
+                selectedBtn.classList.add('wrong');
+                allBtns[quizData.correctIndex].classList.add('correct');
+                
+                statusMessage.style.color = "#d93025";
+                statusMessage.innerHTML = `Špatně. Správná odpověď je: <strong>${correctOptionText}</strong>`;
+            }
+
+            factText.innerHTML = quizData.fact;
+            factBox.style.display = 'block';
+        }
+
+        renderQuiz();
+    </script>
+</body>
+</html>
